@@ -1,0 +1,17 @@
+* {
+  box-sizing: border-box;
+}
+
+.rowLabel {
+  width: 262px;
+  height: 22px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 22px;
+  letter-spacing: 0.04px;
+  white-space: nowrap;
+  color: var(--Primary-Color-primary-6, #1664ff);
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+}

@@ -1,0 +1,39 @@
+* {
+  box-sizing: border-box;
+}
+
+.frame1410097628 {
+  display: inline-flex;
+  align-items: center;
+  column-gap: 4px;
+  width: 218px;
+  height: 20px;
+
+  .iconHover {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    column-gap: 12px;
+    border-radius: 4px;
+    padding: 4px;
+    width: 14px;
+    height: 14px;
+
+    .icons {
+      flex-shrink: 0;
+      width: 12px;
+      height: 12px;
+      overflow: hidden;
+    }
+  }
+
+  .text {
+    flex-shrink: 0;
+    line-height: 20px;
+    letter-spacing: 0.04px;
+    color: var(--Yellow-warning-6, #bd7e00);
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: "PingFang SC", "SF Pro Display", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #0f172a;
+  background: #eef4ff;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.5);
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.hover-scrollbar {
+  scrollbar-width: none;
+}
+
+.hover-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.hover-scrollbar:hover,
+.hover-scrollbar:focus-within {
+  scrollbar-width: thin;
+}
+
+.hover-scrollbar:hover::-webkit-scrollbar,
+.hover-scrollbar:focus-within::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.budget-unit-selector .arco-checkbox {
+  padding-left: 0;
+  line-height: 1;
+}
+
+.budget-unit-selector .arco-checkbox-mask-wrapper {
+  top: 0;
+}
+
+.budget-unit-selector .arco-checkbox:not(.arco-checkbox-checked):not(.arco-checkbox-indeterminate) .arco-checkbox-mask {
+  border-width: 1px;
+  border-color: #c9cdd4;
+}
+
+.budget-unit-selector .arco-checkbox:not(.arco-checkbox-disabled):not(.arco-checkbox-checked):not(.arco-checkbox-indeterminate):hover .arco-checkbox-mask {
+  border-color: #86909c;
+}

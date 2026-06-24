@@ -1,0 +1,24 @@
+* {
+  box-sizing: border-box;
+}
+
+.frame1410097636 {
+  display: inline-flex;
+  align-items: center;
+  column-gap: 4px;
+  border-radius: 4px;
+  background: var(--Background-color-bg-5, #f1f3f5);
+  padding: 1px 6px;
+  width: 43px;
+  height: 18px;
+
+  .text {
+    flex-shrink: 0;
+    line-height: 18px;
+    letter-spacing: 0.03px;
+    color: var(--Text-color-text-2, #42464e);
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+  }
+}

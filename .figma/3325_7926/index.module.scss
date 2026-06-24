@@ -1,0 +1,245 @@
+* {
+  box-sizing: border-box;
+}
+
+.frame3 {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: 8px;
+  box-shadow: var(--shadow-Border-all, 0px 0px 0px 1px #eaedf1);
+  background: var(--Fill-color-bg-white, #ffffff);
+  width: 596px;
+  height: 387px;
+  overflow: hidden;
+
+  .frame1912054060 {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    align-self: stretch;
+    column-gap: 16px;
+    border-width: 0px 0px 1px;
+    border-style: solid;
+    border-color: var(--Line-color-border-2, #eaedf1);
+    background: var(--Background-hover-color-bg-3, #fafbfc);
+    padding: 10px 10px 9px 18px;
+
+    .text {
+      flex-shrink: 0;
+      line-height: 22px;
+      letter-spacing: 0.04px;
+      color: var(--Text-color-text-1, #0c0d0e);
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+      font-size: 13px;
+    }
+
+    .instance {
+      display: inline-flex;
+      flex-shrink: 0;
+      align-items: flex-start;
+      column-gap: 10px;
+      border-radius: 20px;
+      box-shadow: inset 0px 1px 1px 0px #00000014;
+      background: var(--Fill-color-fill-1, #c7ccd6);
+      padding: 3px 15px 3px 3px;
+      overflow: hidden;
+
+      .ellipse {
+        flex-shrink: 0;
+        border-radius: 50%;
+        box-shadow: 0px 1px 4px 0px #00000026, 0px 1px 0px 0px #14141414;
+        background: var(--Fill-color-bg-white, #ffffff);
+        width: 10px;
+        height: 10px;
+      }
+    }
+
+    .frame1912054056 {
+      display: inline-flex;
+      flex-shrink: 0;
+      align-items: center;
+      column-gap: 8px;
+    }
+
+    .frame1912054057 {
+      display: flex;
+      flex-grow: 1;
+      align-items: center;
+      column-gap: 8px;
+    }
+  }
+
+  .frame1912054058 {
+    display: inline-flex;
+    flex-grow: 1;
+    align-items: center;
+    align-self: stretch;
+
+    .text3 {
+      flex-shrink: 0;
+      line-height: 22px;
+      letter-spacing: 0.04px;
+      color: var(--Text-color-text-3, #737a87);
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+      font-size: 13px;
+    }
+
+    .frame2 {
+      flex-shrink: 0;
+      width: 60px;
+      height: 60px;
+      overflow: hidden;
+    }
+
+    .frame1912054054 {
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      align-items: center;
+      align-self: stretch;
+
+      .frame1410097688 {
+        display: inline-flex;
+        flex-shrink: 0;
+        align-items: center;
+        align-self: stretch;
+        column-gap: 12px;
+        border-width: 0px 0px 1px;
+        border-style: solid;
+        border-color: var(--Line-color-border-2, #eaedf1);
+        background: var(--Fill-color-bg-white, #ffffff);
+        padding: 10px 185px 9px 18px;
+
+        .instance2 {
+          display: flex;
+          flex-shrink: 0;
+          align-items: center;
+          column-gap: 8px;
+          box-shadow: 0px 1px 1px 0px #0000001a, 0px 0px 0px 1px #464f6029;
+
+          .frame {
+            flex-shrink: 0;
+            border-radius: 2px;
+            box-shadow: var(
+              --shadow-Assembly-Data-entry-Default,
+              0px 0px 0px 1px #dde2e9
+            );
+            background: var(--Fill-color-bg-white, #ffffff);
+            width: 14px;
+            height: 14px;
+            overflow: hidden;
+          }
+        }
+
+        .text2 {
+          flex-shrink: 0;
+          line-height: 22px;
+          letter-spacing: 0.04px;
+          color: var(--Text-color-text-2, #42464e);
+          font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+          font-size: 13px;
+          font-weight: 500;
+        }
+      }
+
+      .frame1912053948 {
+        display: inline-flex;
+        flex-direction: column;
+        flex-grow: 1;
+        align-items: center;
+        align-self: stretch;
+        justify-content: center;
+        margin-right: 88px;
+        margin-left: 88px;
+        border-radius: 4px;
+        row-gap: 12px;
+      }
+    }
+
+    .frame1410098002 {
+      display: inline-flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      align-items: center;
+      align-self: stretch;
+      justify-content: space-between;
+      box-shadow: var(--shadow-Border-left, -1px 0px 0px 0px #eaedf1);
+      background: var(--Fill-color-bg-white, #ffffff);
+      overflow: hidden;
+
+      .checkbox {
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        align-self: stretch;
+        justify-content: space-between;
+        border-width: 0px 0px 1px;
+        border-style: solid;
+        border-color: var(--Line-color-border-2, #eaedf1);
+        padding: 10px 12px 9px 18px;
+        min-width: 276px;
+        height: 42px;
+
+        .text6 {
+          flex-shrink: 0;
+          width: 200px;
+          line-height: 22px;
+          letter-spacing: 0.04px;
+          color: var(--Text-color-text-2, #42464e);
+          font-size: 13px;
+
+          .text4 {
+            line-height: 22px;
+            letter-spacing: 0.04px;
+            color: var(--Text-color-text-2, #42464e);
+            font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+          }
+
+          .text5 {
+            line-height: 22px;
+            letter-spacing: 0.04px;
+            color: var(--Text-color-text-2, #42464e);
+            font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+          }
+        }
+
+        .icDelete {
+          display: flex;
+          flex-shrink: 0;
+          align-items: center;
+          justify-content: center;
+          column-gap: 9px;
+          border-radius: 4px;
+          background: var(--Fill-color-bg-white, #ffffff);
+          padding: 7px;
+          width: 24px;
+          height: 24px;
+
+          .delete {
+            flex-shrink: 0;
+            width: 16px;
+            height: 16px;
+            overflow: hidden;
+          }
+        }
+      }
+
+      .frame19120539482 {
+        display: inline-flex;
+        flex-direction: column;
+        flex-grow: 1;
+        align-items: center;
+        align-self: stretch;
+        justify-content: center;
+        margin-right: 86px;
+        margin-left: 86px;
+        row-gap: 12px;
+      }
+    }
+  }
+}

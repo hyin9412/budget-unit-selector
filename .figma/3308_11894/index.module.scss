@@ -1,0 +1,68 @@
+* {
+  box-sizing: border-box;
+}
+
+.instance2 {
+  display: flex;
+  align-items: center;
+  width: 285px;
+  height: 32px;
+
+  .wrapper {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: flex-start;
+    align-self: stretch;
+    outline-width: 1px;
+    outline-style: solid;
+    outline-color: var(--Line-color-border-3, #dde2e9);
+    border-radius: 4px 0px 0px 4px;
+    background: var(--Fill-color-bg-white, #ffffff);
+    padding: 5px 12px;
+    overflow: hidden;
+
+    .text {
+      flex-shrink: 0;
+      line-height: 22px;
+      letter-spacing: 0.04px;
+      color: var(--Text-color-text-2, #42464e);
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+      font-size: 13px;
+    }
+  }
+
+  .instance {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    column-gap: 4px;
+    border-radius: 0px 4px 4px 0px;
+    box-shadow: var(
+      --shadow-Assembly-Data-entry-default,
+      0px 0px 0px 1px #dde2e9
+    );
+    background: var(--Fill-color-bg-white, #ffffff);
+    padding: 5px 12px;
+    overflow: hidden;
+
+    .text2 {
+      flex-grow: 1;
+      height: 22px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 22px;
+      letter-spacing: 0.04px;
+      white-space: nowrap;
+      color: var(--Text-color-text-3, #737a87);
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+      font-size: 13px;
+    }
+
+    .down {
+      flex-shrink: 0;
+      width: 12px;
+      height: 12px;
+      overflow: hidden;
+    }
+  }
+}
