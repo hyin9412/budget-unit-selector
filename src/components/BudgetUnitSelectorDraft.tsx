@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { RefObject } from 'react'
+import type { ReactNode, RefObject } from 'react'
 import { ChevronDown, ChevronRight, X } from 'lucide-react'
-import { Checkbox as VeCheckbox, Switch } from '@ve-o-design/web-react'
+import { Checkbox as VeCheckbox, Switch, Tooltip } from '@ve-o-design/web-react'
 
 import deleteIcon from '../../ic-delete.svg'
 import PasteFilterNotice from '@/components/PasteFilterNotice'
@@ -18,7 +18,7 @@ import {
 
 const FIRST_CASCADE_COLUMN_WIDTH = 320
 const CASCADE_COLUMN_WIDTH = 240
-const SELECTED_PANEL_WIDTH = 280
+const SELECTED_PANEL_WIDTH = 320
 const PRIMARY_COLOR = 'rgb(var(--arco-volc2-primary-6, var(--primary-6)))'
 const PRIMARY_RING = '0 0 0 2px rgba(var(--arco-volc2-primary-6, var(--primary-6)), 0.16)'
 
@@ -41,6 +41,9 @@ interface BudgetUnitSelectorProps {
   onSetSelectedIds: (selectedIds: string[]) => void
   onClearSelected: () => void
   onRemoveSelected: (nodeId: string) => void
+  enableOverflowTooltip?: boolean
+  showSelectedPath?: boolean
+  selectedListHorizontalPadding?: number
 }
 
 function flattenTree(nodes: BudgetUnitNode[]): BudgetUnitNode[] {
@@ -61,6 +64,33 @@ function getAncestorPath(nodeId: string, visibleNodeMap: Record<string, BudgetUn
   }
 
   return path
+}
+
+function getPathLabelText(node: BudgetUnitNode, visibleNodeMap: Record<string, BudgetUnitNode>) {
+  return getAncestorPath(node.id, visibleNodeMap)
+    .map((id) => visibleNodeMap[id]?.name)
+    .filter((item): item is string => Boolean(item))
+    .join(' / ')
+}
+
+function OverflowTooltip({
+  enabled,
+  content,
+  className,
+  children,
+}: {
+  enabled?: boolean
+  content: string
+  className: string
+  children: ReactNode
+}) {
+  const textNode = <span className={className}>{children}</span>
+
+  if (!enabled) {
+    return textNode
+  }
+
+  return <Tooltip content={content}>{textNode}</Tooltip>
 }
 
 function renderSearchPathLabel(node: BudgetUnitNode, visibleNodeMap: Record<string, BudgetUnitNode>, keyword: string) {
@@ -150,6 +180,9 @@ export default function BudgetUnitSelector({
   onSetSelectedIds,
   onClearSelected,
   onRemoveSelected,
+  enableOverflowTooltip = false,
+  showSelectedPath = false,
+  selectedListHorizontalPadding = 12,
 }: BudgetUnitSelectorProps) {
   const [activePath, setActivePath] = useState<string[]>([])
   const [isTriggerHovered, setIsTriggerHovered] = useState(false)
@@ -309,7 +342,9 @@ export default function BudgetUnitSelector({
                 key={node.id}
                 className="inline-flex max-w-[160px] shrink-0 items-center gap-1 rounded-[4px] bg-[#f1f3f5] px-2 py-[1px] text-[13px] leading-[20px] text-[#42464e]"
               >
-                <span className="truncate">{node.name}</span>
+                <OverflowTooltip enabled={enableOverflowTooltip} content={node.name} className="truncate">
+                  {node.name}
+                </OverflowTooltip>
                 <button
                   type="button"
                   onClick={(event) => {
@@ -417,9 +452,13 @@ export default function BudgetUnitSelector({
                                 />
                               </div>
                               <div className="min-w-0 flex-1">
-                                <div className="truncate">
+                                <OverflowTooltip
+                                  enabled={enableOverflowTooltip}
+                                  content={getPathLabelText(node, visibleNodeMap)}
+                                  className="block truncate"
+                                >
                                   {renderTokenizedPathLabel(node, visibleNodeMap, matchedTokenSet)}
-                                </div>
+                                </OverflowTooltip>
                               </div>
                               <StatusBadge node={node} />
                             </div>
@@ -449,9 +488,13 @@ export default function BudgetUnitSelector({
                               />
                               <div className="min-w-0 flex-1">
                                 <div className="flex items-center gap-[6px]">
-                                  <span className="truncate text-slate-800">
+                                  <OverflowTooltip
+                                    enabled={enableOverflowTooltip}
+                                    content={getPathLabelText(node, visibleNodeMap)}
+                                    className="block truncate text-slate-800"
+                                  >
                                     {renderSearchPathLabel(node, visibleNodeMap, keyword)}
-                                  </span>
+                                  </OverflowTooltip>
                                   <StatusBadge node={node} />
                                 </div>
                               </div>
@@ -495,8 +538,16 @@ export default function BudgetUnitSelector({
                                   onChange={() => onToggleNode(node.id)}
                                 />
                               </div>
-                              <span className="min-w-0 flex-1 truncate">{node.name}</span>
-                              {!filterToTopLevel && node.level > 1 ? <StatusBadge node={node} /> : null}
+                              <div className="flex min-w-0 flex-1 items-center gap-[6px]">
+                                <OverflowTooltip
+                                  enabled={enableOverflowTooltip}
+                                  content={node.name}
+                                  className="min-w-0 shrink truncate"
+                                >
+                                  {node.name}
+                                </OverflowTooltip>
+                                {!filterToTopLevel && node.level > 1 ? <StatusBadge node={node} /> : null}
+                              </div>
                               {hasChildren ? <ChevronRight className="h-4 w-4 text-slate-400" /> : null}
                             </div>
                           )
@@ -510,7 +561,7 @@ export default function BudgetUnitSelector({
               </div>
             </div>
 
-            <div className="w-[280px] bg-white">
+            <div className="bg-white" style={{ width: SELECTED_PANEL_WIDTH }}>
               <div className="flex h-[42px] items-center justify-between border-b border-slate-200 px-4">
                 <label className="flex items-center gap-2 text-[13px] leading-[22px] font-medium text-slate-700">
                   <VeCheckbox checked={leftAllSelected} indeterminate={!leftAllSelected && leftSomeSelected} onChange={toggleBulkSelection} />
@@ -524,14 +575,23 @@ export default function BudgetUnitSelector({
                   <img src={deleteIcon} alt="" aria-hidden="true" className="h-5 w-5" />
                 </button>
               </div>
-              <div className="hover-scrollbar h-[344px] overflow-y-auto px-3 py-3">
+              <div
+                className="hover-scrollbar h-[344px] overflow-y-auto py-3"
+                style={{ paddingLeft: selectedListHorizontalPadding, paddingRight: selectedListHorizontalPadding }}
+              >
                 {selectedNodes.length ? (
                   <div className="space-y-1">
                     {selectedNodes.map((node) => (
                       <div key={node.id} className="flex items-center gap-3 rounded px-3 py-2 text-[13px] leading-[22px] text-slate-700 hover:bg-slate-50">
                         <div className="min-w-0 flex-1">
                           <div className="flex min-w-0 items-center gap-[6px]">
-                            <span className="truncate">{node.name}</span>
+                            <OverflowTooltip
+                              enabled={enableOverflowTooltip}
+                              content={showSelectedPath ? getPathLabelText(node, visibleNodeMap) : node.name}
+                              className="block truncate"
+                            >
+                              {showSelectedPath ? getPathLabelText(node, visibleNodeMap) : node.name}
+                            </OverflowTooltip>
                             <StatusBadge node={node} />
                           </div>
                         </div>

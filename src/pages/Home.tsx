@@ -2,8 +2,9 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 
 import BudgetUnitSelector from '@/components/BudgetUnitSelector'
 import BudgetUnitSelectorDraft from '@/components/BudgetUnitSelectorDraft'
-import type { FilterSnapshot } from '@/types/budget'
+import type { BudgetUnitNode, FilterSnapshot } from '@/types/budget'
 import { budgetTree } from '@/utils/budgetData'
+import { fullBudgetTree } from '@/utils/fullBudgetData'
 import {
   buildBudgetIndexes,
   buildTreeView,
@@ -13,28 +14,29 @@ import {
   toggleCascadeSelection,
 } from '@/utils/budgetHelpers'
 
-const indexes = buildBudgetIndexes(budgetTree)
 const emptySnapshot: FilterSnapshot = {
   selectedIds: [],
   filterToTopLevel: false,
   showPermittedOnly: true,
 }
 
-function useSelectorPreview(options: { autoSelectOnDelimitedInput: boolean }) {
+function useSelectorPreview(options: { autoSelectOnDelimitedInput: boolean; tree?: BudgetUnitNode[] }) {
+  const sourceTree = options.tree ?? budgetTree
   const selectorRef = useRef<HTMLDivElement>(null)
   const [isOpen, setIsOpen] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [invalidPastedCount, setInvalidPastedCount] = useState(0)
   const [snapshot, setSnapshot] = useState<FilterSnapshot>(emptySnapshot)
+  const indexes = useMemo(() => buildBudgetIndexes(sourceTree), [sourceTree])
 
   const treeView = useMemo(
-    () => buildTreeView(budgetTree, snapshot.showPermittedOnly),
-    [snapshot.showPermittedOnly],
+    () => buildTreeView(sourceTree, snapshot.showPermittedOnly),
+    [snapshot.showPermittedOnly, sourceTree],
   )
   const visibleIndexes = useMemo(() => buildBudgetIndexes(treeView), [treeView])
   const selectedNodes = useMemo(
     () => getSelectedNodes(snapshot.selectedIds, indexes.nodeMap),
-    [snapshot.selectedIds],
+    [snapshot.selectedIds, indexes.nodeMap],
   )
   const selectedSet = useMemo(() => new Set(snapshot.selectedIds), [snapshot.selectedIds])
 
@@ -177,6 +179,7 @@ function useSelectorPreview(options: { autoSelectOnDelimitedInput: boolean }) {
 export default function Home() {
   const original = useSelectorPreview({ autoSelectOnDelimitedInput: true })
   const draft = useSelectorPreview({ autoSelectOnDelimitedInput: false })
+  const realDataDraft = useSelectorPreview({ autoSelectOnDelimitedInput: false, tree: fullBudgetTree })
 
   return (
     <div className="min-h-screen bg-white px-6 py-10 text-slate-900">
@@ -226,6 +229,33 @@ export default function Home() {
             onSetSelectedIds={draft.setSelectedIds}
             onClearSelected={draft.clearSelected}
             onRemoveSelected={draft.removeSelected}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <div className="text-xs font-medium text-slate-400">【选择方案，灌入真实数据，已选择改/分割展示层级】</div>
+          <BudgetUnitSelectorDraft
+            containerRef={realDataDraft.selectorRef}
+            isOpen={realDataDraft.isOpen}
+            searchText={realDataDraft.searchText}
+            filterToTopLevel={realDataDraft.snapshot.filterToTopLevel}
+            showPermittedOnly={realDataDraft.snapshot.showPermittedOnly}
+            invalidPastedCount={realDataDraft.invalidPastedCount}
+            tree={realDataDraft.treeView}
+            selectedNodes={realDataDraft.selectedNodes}
+            selectedIds={realDataDraft.snapshot.selectedIds}
+            selectedSet={realDataDraft.selectedSet}
+            onOpen={() => !realDataDraft.isOpen && realDataDraft.openPanel()}
+            onSearchTextChange={realDataDraft.setSearchText}
+            onFilterToTopLevelChange={realDataDraft.handleFilterToTopLevelChange}
+            onShowPermittedOnlyChange={realDataDraft.handleShowPermittedOnlyChange}
+            onToggleNode={realDataDraft.handleToggleNode}
+            onSetSelectedIds={realDataDraft.setSelectedIds}
+            onClearSelected={realDataDraft.clearSelected}
+            onRemoveSelected={realDataDraft.removeSelected}
+            enableOverflowTooltip
+            showSelectedPath
+            selectedListHorizontalPadding={6}
           />
         </div>
       </main>

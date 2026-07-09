@@ -432,8 +432,10 @@ export default function BudgetUnitSelector({
                                   onChange={() => onToggleNode(node.id)}
                                 />
                               </div>
-                              <span className="min-w-0 flex-1 truncate">{node.name}</span>
-                              {!filterToTopLevel && node.level > 1 ? <StatusBadge node={node} /> : null}
+                              <div className="flex min-w-0 flex-1 items-center gap-[6px]">
+                                <span className="min-w-0 shrink truncate">{node.name}</span>
+                                {!filterToTopLevel && node.level > 1 ? <StatusBadge node={node} /> : null}
+                              </div>
                               {hasChildren ? <ChevronRight className="h-4 w-4 text-slate-400" /> : null}
                             </div>
                           )

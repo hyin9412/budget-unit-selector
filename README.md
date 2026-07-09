@@ -1,57 +1,58 @@
-# React + TypeScript + Vite
+# 预算单元复杂选择器
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+基于 React + TypeScript + Vite 的预算单元选择器交互原型，接入了 `@ve-o-design/web-react`，当前包含两套交互方案预览。
 
-Currently, two official plugins are available:
+## 访问地址
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- GitHub Repository: `https://github.com/hyin9412/budget-unit-selector`
+- GitHub Pages: `https://hyin9412.github.io/budget-unit-selector/`
 
-## Expanding the ESLint configuration
+## 本地启动
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+常用命令：
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  extends: [
-    // other configs...
-    // Enable lint rules for React
-    reactX.configs['recommended-typescript'],
-    // Enable lint rules for React DOM
-    reactDom.configs.recommended,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+npm run build
+npm run preview
+npm run test:run
 ```
+
+## 部署方式
+
+当前采用 GitHub Actions 自动构建，并将产物发布到 `gh-pages` 分支。
+
+### 自动发布
+
+推送到 `main` 分支后会自动执行：
+
+```bash
+npm install --legacy-peer-deps
+npm run build
+```
+
+构建完成后，GitHub Actions 会把 `dist/` 发布到 `gh-pages` 分支，GitHub Pages 再从该分支提供线上访问。
+
+### Pages 配置
+
+仓库的 GitHub Pages 来源需要指向：
+
+- Branch: `gh-pages`
+- Folder: `/ (root)`
+
+### 手动触发
+
+如果已经配置好 workflow，也可以在 GitHub 仓库的 Actions 页面手动重新运行部署任务。
+
+## GitHub Pages 注意事项
+
+这个项目部署在子路径 `/budget-unit-selector/` 下，Vite 和 React Router 都要显式处理基路径：
+
+- `vite.config.ts` 中生产环境 `base` 为 `/budget-unit-selector/`
+- `src/App.tsx` 中 `BrowserRouter` 需要使用 `basename={import.meta.env.BASE_URL}`
+
+如果漏掉 `basename`，线上会出现静态资源正常加载但页面主体空白的问题。
