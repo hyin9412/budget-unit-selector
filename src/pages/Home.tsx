@@ -180,12 +180,13 @@ export default function Home() {
   const original = useSelectorPreview({ autoSelectOnDelimitedInput: true })
   const draft = useSelectorPreview({ autoSelectOnDelimitedInput: false })
   const realDataDraft = useSelectorPreview({ autoSelectOnDelimitedInput: false, tree: fullBudgetTree })
+  const realDataTagDraft = useSelectorPreview({ autoSelectOnDelimitedInput: false, tree: fullBudgetTree })
 
   return (
     <div className="min-h-screen bg-white px-6 py-10 text-slate-900">
       <main className="w-[285px] space-y-6">
         <div className="space-y-2">
-          <div className="text-xs font-medium text-slate-400">自动分组后自动选中</div>
+          <div className="w-max whitespace-nowrap text-xs font-medium text-slate-400">6/23 自动分组后自动选中</div>
           <BudgetUnitSelector
             containerRef={original.selectorRef}
             isOpen={original.isOpen}
@@ -209,7 +210,7 @@ export default function Home() {
         </div>
 
         <div className="space-y-2">
-          <div className="text-xs font-medium text-slate-400">✅ 【选择方案，仅作交互示意，视觉参考设计稿】</div>
+          <div className="w-max whitespace-nowrap text-xs font-medium text-slate-400">6/23 ✅ 【选择方案，仅作交互示意，视觉参考设计稿】</div>
           <BudgetUnitSelectorDraft
             containerRef={draft.selectorRef}
             isOpen={draft.isOpen}
@@ -233,7 +234,7 @@ export default function Home() {
         </div>
 
         <div className="space-y-2">
-          <div className="text-xs font-medium text-slate-400">【选择方案，灌入真实数据，已选择改/分割展示层级】</div>
+          <div className="w-max whitespace-nowrap text-xs font-medium text-slate-400">7/9 【选择方案，灌入真实数据，已选择改/分割展示层级】</div>
           <BudgetUnitSelectorDraft
             containerRef={realDataDraft.selectorRef}
             isOpen={realDataDraft.isOpen}
@@ -255,6 +256,36 @@ export default function Home() {
             onRemoveSelected={realDataDraft.removeSelected}
             enableOverflowTooltip
             showSelectedPath
+            collapseLongTriggerPreview
+            selectedListHorizontalPadding={6}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <div className="w-max whitespace-nowrap text-xs font-medium text-slate-400">7/9 【选择方案，灌入真实数据，已选择改Tag展示层级，hover出全部路径】</div>
+          <BudgetUnitSelectorDraft
+            containerRef={realDataTagDraft.selectorRef}
+            isOpen={realDataTagDraft.isOpen}
+            searchText={realDataTagDraft.searchText}
+            filterToTopLevel={realDataTagDraft.snapshot.filterToTopLevel}
+            showPermittedOnly={realDataTagDraft.snapshot.showPermittedOnly}
+            invalidPastedCount={realDataTagDraft.invalidPastedCount}
+            tree={realDataTagDraft.treeView}
+            selectedNodes={realDataTagDraft.selectedNodes}
+            selectedIds={realDataTagDraft.snapshot.selectedIds}
+            selectedSet={realDataTagDraft.selectedSet}
+            onOpen={() => !realDataTagDraft.isOpen && realDataTagDraft.openPanel()}
+            onSearchTextChange={realDataTagDraft.setSearchText}
+            onFilterToTopLevelChange={realDataTagDraft.handleFilterToTopLevelChange}
+            onShowPermittedOnlyChange={realDataTagDraft.handleShowPermittedOnlyChange}
+            onToggleNode={realDataTagDraft.handleToggleNode}
+            onSetSelectedIds={realDataTagDraft.setSelectedIds}
+            onClearSelected={realDataTagDraft.clearSelected}
+            onRemoveSelected={realDataTagDraft.removeSelected}
+            enableOverflowTooltip
+            selectedDisplayMode="name"
+            showSelectedLevelTag
+            collapseLongTriggerPreview
             selectedListHorizontalPadding={6}
           />
         </div>

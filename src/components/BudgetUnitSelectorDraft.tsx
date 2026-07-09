@@ -43,6 +43,9 @@ interface BudgetUnitSelectorProps {
   onRemoveSelected: (nodeId: string) => void
   enableOverflowTooltip?: boolean
   showSelectedPath?: boolean
+  selectedDisplayMode?: 'name' | 'path'
+  showSelectedLevelTag?: boolean
+  collapseLongTriggerPreview?: boolean
   selectedListHorizontalPadding?: number
 }
 
@@ -73,6 +76,19 @@ function getPathLabelText(node: BudgetUnitNode, visibleNodeMap: Record<string, B
     .join(' / ')
 }
 
+function getLevelLabel(level: number) {
+  switch (level) {
+    case 1:
+      return '一级'
+    case 2:
+      return '二级'
+    case 3:
+      return '三级'
+    default:
+      return `${level}级`
+  }
+}
+
 function OverflowTooltip({
   enabled,
   content,
@@ -84,13 +100,21 @@ function OverflowTooltip({
   className: string
   children: ReactNode
 }) {
-  const textNode = <span className={className}>{children}</span>
+  const textNode = (
+    <span className="inline-block max-w-full align-top">
+      <span className={className}>{children}</span>
+    </span>
+  )
 
   if (!enabled) {
     return textNode
   }
 
-  return <Tooltip content={content}>{textNode}</Tooltip>
+  return (
+    <Tooltip content={content} position="top" getPopupContainer={() => document.body}>
+      {textNode}
+    </Tooltip>
+  )
 }
 
 function renderSearchPathLabel(node: BudgetUnitNode, visibleNodeMap: Record<string, BudgetUnitNode>, keyword: string) {
@@ -182,6 +206,9 @@ export default function BudgetUnitSelector({
   onRemoveSelected,
   enableOverflowTooltip = false,
   showSelectedPath = false,
+  selectedDisplayMode = showSelectedPath ? 'path' : 'name',
+  showSelectedLevelTag = false,
+  collapseLongTriggerPreview = false,
   selectedListHorizontalPadding = 12,
 }: BudgetUnitSelectorProps) {
   const [activePath, setActivePath] = useState<string[]>([])
@@ -204,8 +231,16 @@ export default function BudgetUnitSelector({
     [visibleNodes],
   )
   const topLevelNodes = tree
-  const triggerPreviewNodes = selectedNodes.slice(0, 1)
-  const extraSelectedCount = Math.max(selectedNodes.length - triggerPreviewNodes.length, 0)
+  const defaultTriggerPreviewNodes = selectedNodes.slice(0, 1)
+  const shouldCollapseToCountOnly =
+    collapseLongTriggerPreview &&
+    selectedNodes.length > 1 &&
+    defaultTriggerPreviewNodes[0] !== undefined &&
+    defaultTriggerPreviewNodes[0].name.length > 12
+  const triggerPreviewNodes = shouldCollapseToCountOnly ? [] : defaultTriggerPreviewNodes
+  const extraSelectedCount = shouldCollapseToCountOnly
+    ? selectedNodes.length
+    : Math.max(selectedNodes.length - triggerPreviewNodes.length, 0)
   const showClearIcon = isOpen || isTriggerHovered
 
   const matchesKeyword = useCallback(
@@ -584,16 +619,32 @@ export default function BudgetUnitSelector({
                     {selectedNodes.map((node) => (
                       <div key={node.id} className="flex items-center gap-3 rounded px-3 py-2 text-[13px] leading-[22px] text-slate-700 hover:bg-slate-50">
                         <div className="min-w-0 flex-1">
-                          <div className="flex min-w-0 items-center gap-[6px]">
-                            <OverflowTooltip
-                              enabled={enableOverflowTooltip}
-                              content={showSelectedPath ? getPathLabelText(node, visibleNodeMap) : node.name}
-                              className="block truncate"
-                            >
-                              {showSelectedPath ? getPathLabelText(node, visibleNodeMap) : node.name}
-                            </OverflowTooltip>
-                            <StatusBadge node={node} />
-                          </div>
+                          {(() => {
+                            const fullPathLabel = getPathLabelText(node, visibleNodeMap)
+                            const selectedLabel = selectedDisplayMode === 'path' ? fullPathLabel : node.name
+                            const shouldShowSelectedTooltip =
+                              enableOverflowTooltip && selectedDisplayMode === 'path'
+                                ? true
+                                : enableOverflowTooltip && fullPathLabel !== node.name
+
+                            return (
+                              <div className="flex min-w-0 items-center gap-[6px]">
+                                <OverflowTooltip
+                                  enabled={shouldShowSelectedTooltip}
+                                  content={fullPathLabel}
+                                  className="block truncate"
+                                >
+                                  {selectedLabel}
+                                </OverflowTooltip>
+                                <StatusBadge node={node} />
+                                {showSelectedLevelTag ? (
+                                  <span className="inline-flex h-[18px] shrink-0 items-center rounded bg-[#F1F3F5] px-[6px] text-[10px] font-medium leading-[18px] text-[#42464E]">
+                                    {getLevelLabel(node.level)}
+                                  </span>
+                                ) : null}
+                              </div>
+                            )
+                          })()}
                         </div>
                         <button
                           type="button"
