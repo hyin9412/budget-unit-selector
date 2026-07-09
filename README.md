@@ -24,29 +24,38 @@ npm run test:run
 
 ## 部署方式
 
-当前采用 GitHub Actions 自动构建，并将产物发布到 `gh-pages` 分支。
+当前采用 GitHub Pages 的 `gh-pages` 分支发布，不依赖 GitHub Actions。
 
-### 自动发布
-
-推送到 `main` 分支后会自动执行：
+### 1. 构建生产产物
 
 ```bash
-npm install --legacy-peer-deps
 npm run build
 ```
 
-构建完成后，GitHub Actions 会把 `dist/` 发布到 `gh-pages` 分支，GitHub Pages 再从该分支提供线上访问。
+### 2. 发布 `dist/` 到 `gh-pages`
 
-### Pages 配置
+在项目根目录执行：
 
-仓库的 GitHub Pages 来源需要指向：
+```bash
+tmpdir=$(mktemp -d /tmp/budget-unit-selector-pages.XXXXXX) && \
+rsync -a dist/ "$tmpdir"/ && \
+touch "$tmpdir"/.nojekyll && \
+cd "$tmpdir" && \
+git init -b gh-pages && \
+git config user.name "YOUR_GITHUB_NAME" && \
+git config user.email "YOUR_GITHUB_EMAIL" && \
+git add . && \
+git commit -m "Deploy GitHub Pages" && \
+git remote add origin https://github.com/hyin9412/budget-unit-selector.git && \
+git push -f origin gh-pages
+```
+
+### 3. 确认 GitHub Pages 来源
+
+仓库的 Pages 配置需要指向：
 
 - Branch: `gh-pages`
 - Folder: `/ (root)`
-
-### 手动触发
-
-如果已经配置好 workflow，也可以在 GitHub 仓库的 Actions 页面手动重新运行部署任务。
 
 ## GitHub Pages 注意事项
 
