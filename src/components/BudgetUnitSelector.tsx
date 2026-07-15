@@ -451,10 +451,7 @@ export default function BudgetUnitSelector({
 
             <div className="w-[280px] bg-white">
               <div className="flex h-[42px] items-center justify-between border-b border-slate-200 px-4">
-                <label className="flex items-center gap-2 text-[13px] leading-[22px] font-medium text-slate-700">
-                  <VeCheckbox checked={leftAllSelected} indeterminate={!leftAllSelected && leftSomeSelected} onChange={toggleBulkSelection} />
-                  已选择：{selectedNodes.length} 项
-                </label>
+                <div className="text-[13px] leading-[22px] font-medium text-slate-700">已选择：{selectedNodes.length} 项</div>
                 <button
                   type="button"
                   onClick={onClearSelected}

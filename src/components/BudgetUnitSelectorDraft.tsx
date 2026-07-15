@@ -10,6 +10,8 @@ import TransferEmptyState from '@/components/TransferEmptyState'
 import { cn } from '@/lib/utils'
 import type { BudgetUnitNode } from '@/types/budget'
 import {
+  collectLeafDescendantIds,
+  getLeafNodeCheckState,
   getNodeCheckState,
   parseDelimitedSelectionTokens,
   resolveDelimitedSelectionInput,
@@ -46,6 +48,9 @@ interface BudgetUnitSelectorProps {
   selectedDisplayMode?: 'name' | 'path'
   showSelectedLevelTag?: boolean
   collapseLongTriggerPreview?: boolean
+  leafSelectionMode?: boolean
+  topLevelFilterLabel?: string
+  topLevelFilterWarningMessage?: string
   selectedListHorizontalPadding?: number
 }
 
@@ -209,6 +214,9 @@ export default function BudgetUnitSelector({
   selectedDisplayMode = showSelectedPath ? 'path' : 'name',
   showSelectedLevelTag = false,
   collapseLongTriggerPreview = false,
+  leafSelectionMode = false,
+  topLevelFilterLabel = '仅看一级预算单元',
+  topLevelFilterWarningMessage,
   selectedListHorizontalPadding = 12,
 }: BudgetUnitSelectorProps) {
   const [activePath, setActivePath] = useState<string[]>([])
@@ -321,7 +329,13 @@ export default function BudgetUnitSelector({
           : visibleNodes.filter(matchesKeyword),
     [filterToTopLevel, hasDelimitedSearch, hasSearch, matchesKeyword, searchResults, tokenizedResults, topLevelNodes, visibleNodes],
   )
-  const bulkSelectableIds = leftSelectableNodes.map((node) => node.id)
+  const bulkSelectableIds = useMemo(
+    () =>
+      leafSelectionMode
+        ? Array.from(new Set(leftSelectableNodes.flatMap((node) => collectLeafDescendantIds(node.id, visibleChildrenMap))))
+        : leftSelectableNodes.map((node) => node.id),
+    [leafSelectionMode, leftSelectableNodes, visibleChildrenMap],
+  )
   const leftAllSelected = bulkSelectableIds.length > 0 && bulkSelectableIds.every((id) => selectedSet.has(id))
   const leftSomeSelected = bulkSelectableIds.some((id) => selectedSet.has(id))
   const leftPanelWidth = hasSearch
@@ -437,19 +451,22 @@ export default function BudgetUnitSelector({
           className="absolute left-0 top-[36px] z-30 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_24px_80px_rgba(15,23,42,0.18)]"
           style={{ width: leftPanelWidth + SELECTED_PANEL_WIDTH }}
         >
-          <div className="flex items-center gap-4 border-b border-slate-200 bg-[#f7f8fa] px-4 py-3">
-            <div className="flex min-w-0 items-center gap-4">
-              <label className="flex items-center gap-2 text-[13px] leading-[22px] text-slate-700">
-                <span>仅看一级预算单元</span>
+          <div className="flex h-[42px] items-start gap-3 border-b border-slate-200 bg-[#fafbfc] px-[18px] pb-[9px] pt-[10px]">
+            <div className="flex min-w-0 flex-1 items-center gap-4">
+              <label className="inline-flex shrink-0 items-center gap-2 text-[13px] leading-[22px] text-slate-700">
+                <span>{topLevelFilterLabel}</span>
                 <Switch size="small" checked={filterToTopLevel} onChange={onFilterToTopLevelChange} />
               </label>
-              <label className="flex items-center gap-2 text-[13px] leading-[22px] text-slate-700">
+              <label className="inline-flex shrink-0 items-center gap-2 text-[13px] leading-[22px] text-slate-700">
                 <span>仅看我有权限的</span>
                 <Switch size="small" checked={showPermittedOnly} onChange={onShowPermittedOnlyChange} />
               </label>
             </div>
-            <div className="ml-auto pl-4">
-              <PasteFilterNotice invalidCount={invalidPastedCount} />
+            <div className="shrink-0">
+              <PasteFilterNotice
+                message={topLevelFilterWarningMessage}
+                invalidCount={topLevelFilterWarningMessage ? 0 : invalidPastedCount}
+              />
             </div>
           </div>
 
@@ -471,7 +488,9 @@ export default function BudgetUnitSelector({
                     {tokenizedResults.length ? (
                       <div className="space-y-2">
                         {tokenizedResults.map((node) => {
-                          const checkState = getNodeCheckState(node.id, selectedSet, visibleChildrenMap)
+                          const checkState = leafSelectionMode
+                            ? getLeafNodeCheckState(node.id, selectedSet, visibleChildrenMap)
+                            : getNodeCheckState(node.id, selectedSet, visibleChildrenMap)
 
                           return (
                             <div
@@ -509,7 +528,9 @@ export default function BudgetUnitSelector({
                     {searchResults.length ? (
                       <div className="space-y-1">
                         {searchResults.map((node) => {
-                          const checkState = getNodeCheckState(node.id, selectedSet, visibleChildrenMap)
+                          const checkState = leafSelectionMode
+                            ? getLeafNodeCheckState(node.id, selectedSet, visibleChildrenMap)
+                            : getNodeCheckState(node.id, selectedSet, visibleChildrenMap)
 
                           return (
                             <div
@@ -554,7 +575,9 @@ export default function BudgetUnitSelector({
                       >
                         {column.map((node) => {
                           const hasChildren = Boolean(node.children?.length) && !filterToTopLevel
-                          const checkState = getNodeCheckState(node.id, selectedSet, visibleChildrenMap)
+                          const checkState = leafSelectionMode
+                            ? getLeafNodeCheckState(node.id, selectedSet, visibleChildrenMap)
+                            : getNodeCheckState(node.id, selectedSet, visibleChildrenMap)
                           const isActive = !filterToTopLevel && activePath[level] === node.id
 
                           return (
@@ -598,10 +621,7 @@ export default function BudgetUnitSelector({
 
             <div className="bg-white" style={{ width: SELECTED_PANEL_WIDTH }}>
               <div className="flex h-[42px] items-center justify-between border-b border-slate-200 px-4">
-                <label className="flex items-center gap-2 text-[13px] leading-[22px] font-medium text-slate-700">
-                  <VeCheckbox checked={leftAllSelected} indeterminate={!leftAllSelected && leftSomeSelected} onChange={toggleBulkSelection} />
-                  已选择：{selectedNodes.length} 项
-                </label>
+                <div className="text-[13px] leading-[22px] font-medium text-slate-700">已选择：{selectedNodes.length} 项</div>
                 <button
                   type="button"
                   onClick={onClearSelected}

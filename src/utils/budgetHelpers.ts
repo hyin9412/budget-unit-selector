@@ -106,6 +106,16 @@ export function collectDescendantIds(id: string, childrenMap: Record<string, str
   return ids
 }
 
+export function collectLeafDescendantIds(id: string, childrenMap: Record<string, string[]>) {
+  const children = childrenMap[id] ?? []
+
+  if (children.length === 0) {
+    return [id]
+  }
+
+  return children.flatMap((childId) => collectLeafDescendantIds(childId, childrenMap))
+}
+
 export function toggleCascadeSelection(
   currentIds: string[],
   nodeId: string,
@@ -116,6 +126,26 @@ export function toggleCascadeSelection(
   const shouldUnselect = relatedIds.every((id) => nextSet.has(id))
 
   relatedIds.forEach((id) => {
+    if (shouldUnselect) {
+      nextSet.delete(id)
+      return
+    }
+    nextSet.add(id)
+  })
+
+  return Array.from(nextSet)
+}
+
+export function toggleLeafSelection(
+  currentIds: string[],
+  nodeId: string,
+  childrenMap: Record<string, string[]>,
+) {
+  const relatedLeafIds = collectLeafDescendantIds(nodeId, childrenMap)
+  const nextSet = new Set(currentIds)
+  const shouldUnselect = relatedLeafIds.every((id) => nextSet.has(id))
+
+  relatedLeafIds.forEach((id) => {
     if (shouldUnselect) {
       nextSet.delete(id)
       return
@@ -142,6 +172,22 @@ export function appendCascadeSelection(
   return Array.from(nextSet)
 }
 
+export function appendLeafSelection(
+  currentIds: string[],
+  nodeIds: string[],
+  childrenMap: Record<string, string[]>,
+) {
+  const nextSet = new Set(currentIds)
+
+  nodeIds.forEach((nodeId) => {
+    collectLeafDescendantIds(nodeId, childrenMap).forEach((id) => {
+      nextSet.add(id)
+    })
+  })
+
+  return Array.from(nextSet)
+}
+
 export function getNodeCheckState(
   nodeId: string,
   selectedSet: Set<string>,
@@ -153,6 +199,20 @@ export function getNodeCheckState(
   return {
     checked: selectedCount === relatedIds.length,
     indeterminate: selectedCount > 0 && selectedCount < relatedIds.length,
+  }
+}
+
+export function getLeafNodeCheckState(
+  nodeId: string,
+  selectedSet: Set<string>,
+  childrenMap: Record<string, string[]>,
+) {
+  const relatedLeafIds = collectLeafDescendantIds(nodeId, childrenMap)
+  const selectedCount = relatedLeafIds.filter((id) => selectedSet.has(id)).length
+
+  return {
+    checked: selectedCount === relatedLeafIds.length,
+    indeterminate: selectedCount > 0 && selectedCount < relatedLeafIds.length,
   }
 }
 
