@@ -298,7 +298,7 @@ export default function Home() {
             collapseLongTriggerPreview
             selectedListHorizontalPadding={6}
             leafSelectionMode
-            topLevelFilterLabel="按1级预算单元筛选"
+            topLevelFilterLabel="按一级预算单元筛选"
             topLevelFilterWarningMessage={finalNoticeMessage}
           />
           <div className="h-px w-[420px] bg-slate-200" />
