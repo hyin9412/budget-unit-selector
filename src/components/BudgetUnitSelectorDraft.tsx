@@ -23,6 +23,7 @@ const CASCADE_COLUMN_WIDTH = 240
 const SELECTED_PANEL_WIDTH = 320
 const PRIMARY_COLOR = 'rgb(var(--arco-volc2-primary-6, var(--primary-6)))'
 const PRIMARY_RING = '0 0 0 2px rgba(var(--arco-volc2-primary-6, var(--primary-6)), 0.16)'
+const TOP_LEVEL_FILTER_TOOLTIP_ICON_COLOR = '#42464E'
 
 interface BudgetUnitSelectorProps {
   containerRef: RefObject<HTMLDivElement>
@@ -51,6 +52,7 @@ interface BudgetUnitSelectorProps {
   leafSelectionMode?: boolean
   topLevelFilterLabel?: string
   topLevelFilterWarningMessage?: string
+  topLevelFilterTooltipMessage?: string
   selectedListHorizontalPadding?: number
 }
 
@@ -190,6 +192,26 @@ function renderHighlightedText(text: string, keyword: string) {
   )
 }
 
+function HoverInfoIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" className="block shrink-0">
+      <g clipPath="url(#top-level-filter-tooltip-icon-clip)">
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M7 1.5C10.0376 1.5 12.5 3.96243 12.5 7C12.5 10.0376 10.0376 12.5 7 12.5C3.96243 12.5 1.5 10.0376 1.5 7C1.5 3.96243 3.96243 1.5 7 1.5ZM7 2.5C4.51472 2.5 2.5 4.51472 2.5 7C2.5 9.48528 4.51472 11.5 7 11.5C9.48528 11.5 11.5 9.48528 11.5 7C11.5 4.51472 9.48528 2.5 7 2.5ZM7.25 6.25C7.38807 6.25 7.5 6.36193 7.5 6.5V8.75H7.90625C8.04432 8.75 8.15625 8.86193 8.15625 9V9.53125C8.15625 9.66932 8.04432 9.78125 7.90625 9.78125H6C5.86193 9.78125 5.75 9.66932 5.75 9.53125V9C5.75 8.86193 5.86193 8.75 6 8.75H6.5V7.28125H6.25C6.11193 7.28125 6 7.16932 6 7.03125V6.5C6 6.36193 6.11193 6.25 6.25 6.25H7.25ZM7.25 4.25C7.38807 4.25 7.5 4.36193 7.5 4.5V5.25C7.5 5.38807 7.38807 5.5 7.25 5.5H6.5C6.36193 5.5 6.25 5.38807 6.25 5.25V4.5C6.25 4.36193 6.36193 4.25 6.5 4.25H7.25Z"
+          fill={TOP_LEVEL_FILTER_TOOLTIP_ICON_COLOR}
+        />
+      </g>
+      <defs>
+        <clipPath id="top-level-filter-tooltip-icon-clip">
+          <rect width="12" height="12" fill="white" transform="translate(1 1)" />
+        </clipPath>
+      </defs>
+    </svg>
+  )
+}
+
 export default function BudgetUnitSelector({
   containerRef,
   isOpen,
@@ -217,6 +239,7 @@ export default function BudgetUnitSelector({
   leafSelectionMode = false,
   topLevelFilterLabel = '仅看一级预算单元',
   topLevelFilterWarningMessage,
+  topLevelFilterTooltipMessage,
   selectedListHorizontalPadding = 12,
 }: BudgetUnitSelectorProps) {
   const [activePath, setActivePath] = useState<string[]>([])
@@ -454,7 +477,21 @@ export default function BudgetUnitSelector({
           <div className="flex h-[42px] items-start gap-3 border-b border-slate-200 bg-[#fafbfc] px-[18px] pb-[9px] pt-[10px]">
             <div className="flex min-w-0 flex-1 items-center gap-4">
               <label className="inline-flex shrink-0 items-center gap-2 text-[13px] leading-[22px] text-slate-700">
-                <span>{topLevelFilterLabel}</span>
+                <span className="inline-flex items-center gap-1">
+                  <span>{topLevelFilterLabel}</span>
+                  {topLevelFilterTooltipMessage ? (
+                    <Tooltip content={topLevelFilterTooltipMessage} position="top" getPopupContainer={() => document.body}>
+                      <button
+                        type="button"
+                        aria-label={topLevelFilterTooltipMessage}
+                        className="inline-flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-[5px] p-0"
+                        onClick={(event) => event.preventDefault()}
+                      >
+                        <HoverInfoIcon />
+                      </button>
+                    </Tooltip>
+                  ) : null}
+                </span>
                 <Switch size="small" checked={filterToTopLevel} onChange={onFilterToTopLevelChange} />
               </label>
               <label className="inline-flex shrink-0 items-center gap-2 text-[13px] leading-[22px] text-slate-700">

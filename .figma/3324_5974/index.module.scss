@@ -1,0 +1,102 @@
+* {
+  box-sizing: border-box;
+}
+
+.frame1912054055 {
+  display: flex;
+  align-items: flex-start;
+  column-gap: 12px;
+  border-width: 0px 0px 1px;
+  border-style: solid;
+  border-color: var(--Line-color-border-2, #eaedf1);
+  background: var(--Background-hover-color-bg-3, #fafbfc);
+  padding: 10px 18px 9px;
+  width: 640px;
+  height: 42px;
+
+  .frame1912054060 {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    column-gap: 16px;
+
+    .text {
+      flex-shrink: 0;
+      line-height: 22px;
+      letter-spacing: 0.04px;
+      color: var(--Text-color-text-1, #0c0d0e);
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+      font-size: 13px;
+    }
+
+    .instance {
+      display: inline-flex;
+      flex-shrink: 0;
+      align-items: flex-start;
+      column-gap: 10px;
+      border-radius: 20px;
+      box-shadow: inset 0px 1px 1px 0px #00000014;
+      background: var(--Fill-color-fill-1, #c7ccd6);
+      padding: 3px 15px 3px 3px;
+      overflow: hidden;
+
+      .ellipse {
+        flex-shrink: 0;
+        border-radius: 50%;
+        box-shadow: 0px 1px 4px 0px #00000026, 0px 1px 0px 0px #14141414;
+        background: var(--Fill-color-bg-white, #ffffff);
+        width: 10px;
+        height: 10px;
+      }
+    }
+
+    .frame1912054056 {
+      display: inline-flex;
+      flex-shrink: 0;
+      align-items: center;
+      column-gap: 8px;
+    }
+
+    .frame1912054057 {
+      display: flex;
+      flex-grow: 1;
+      align-items: center;
+      column-gap: 8px;
+    }
+  }
+
+  .frame1410097628 {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    column-gap: 4px;
+
+    .iconHover {
+      display: flex;
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: center;
+      column-gap: 12px;
+      border-radius: 4px;
+      padding: 4px;
+      width: 14px;
+      height: 14px;
+
+      .icons {
+        flex-shrink: 0;
+        width: 12px;
+        height: 12px;
+        overflow: hidden;
+      }
+    }
+
+    .text2 {
+      flex-shrink: 0;
+      line-height: 20px;
+      letter-spacing: 0.04px;
+      color: var(--Yellow-warning-6, #bd7e00);
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+      font-size: 13px;
+    }
+  }
+}

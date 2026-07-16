@@ -1,0 +1,21 @@
+* {
+  box-sizing: border-box;
+}
+
+.iconHover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 14px;
+  border-radius: 5px;
+  padding: 5px;
+  width: 16px;
+  height: 16px;
+
+  .icons {
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    overflow: hidden;
+  }
+}

@@ -234,13 +234,16 @@ function useSelectorPreview(options: { autoSelectOnDelimitedInput: boolean; tree
 }
 
 export default function Home() {
+  const topLevelFilterTooltipMessage = '如组织架构存在变动，开启按一级预算单元筛选'
   const original = useSelectorPreview({ autoSelectOnDelimitedInput: true })
   const draft = useSelectorPreview({ autoSelectOnDelimitedInput: false })
   const realDataDraft = useSelectorPreview({ autoSelectOnDelimitedInput: false, tree: fullBudgetTree })
   const realDataTagDraft = useSelectorPreview({ autoSelectOnDelimitedInput: false, tree: fullBudgetTree })
   const finalDraft = useSelectorPreview({ autoSelectOnDelimitedInput: false, tree: fullBudgetTree, leafSelectionMode: true })
+  const archivedFinalDraft = useSelectorPreview({ autoSelectOnDelimitedInput: false, tree: fullBudgetTree, leafSelectionMode: true })
   const finalTreeIndexes = useMemo(() => buildBudgetIndexes(fullBudgetTree), [])
   const finalVisibleIndexes = useMemo(() => buildBudgetIndexes(finalDraft.treeView), [finalDraft.treeView])
+  const archivedFinalVisibleIndexes = useMemo(() => buildBudgetIndexes(archivedFinalDraft.treeView), [archivedFinalDraft.treeView])
   const finalSelectedDisplayNodes = useMemo(() => {
     if (!finalDraft.snapshot.filterToTopLevel) {
       return finalDraft.selectedNodes
@@ -252,6 +255,23 @@ export default function Home() {
 
     return getSelectedNodes(topLevelIds, finalVisibleIndexes.nodeMap)
   }, [finalDraft.selectedNodes, finalDraft.snapshot.filterToTopLevel, finalDraft.snapshot.selectedIds, finalTreeIndexes.nodeMap, finalVisibleIndexes.nodeMap])
+  const archivedFinalSelectedDisplayNodes = useMemo(() => {
+    if (!archivedFinalDraft.snapshot.filterToTopLevel) {
+      return archivedFinalDraft.selectedNodes
+    }
+
+    const topLevelIds = Array.from(
+      new Set(archivedFinalDraft.snapshot.selectedIds.map((id) => getTopLevelAncestorId(id, finalTreeIndexes.nodeMap))),
+    )
+
+    return getSelectedNodes(topLevelIds, archivedFinalVisibleIndexes.nodeMap)
+  }, [
+    archivedFinalDraft.selectedNodes,
+    archivedFinalDraft.snapshot.filterToTopLevel,
+    archivedFinalDraft.snapshot.selectedIds,
+    finalTreeIndexes.nodeMap,
+    archivedFinalVisibleIndexes.nodeMap,
+  ])
   const handleFinalRemoveSelected = (id: string) => {
     if (!finalDraft.snapshot.filterToTopLevel) {
       finalDraft.removeSelected(id)
@@ -262,11 +282,27 @@ export default function Home() {
     const descendantLeafIds = new Set(collectLeafDescendantIds(id, activeChildrenMap))
     finalDraft.setSelectedIds(finalDraft.snapshot.selectedIds.filter((selectedId) => !descendantLeafIds.has(selectedId)))
   }
-  const finalNoticeMessage = finalDraft.invalidPastedCount > 0
-    ? undefined
-    : finalDraft.snapshot.filterToTopLevel && finalDraft.topLevelFilterAutoRemovedCount > 0
+  const handleArchivedFinalRemoveSelected = (id: string) => {
+    if (!archivedFinalDraft.snapshot.filterToTopLevel) {
+      archivedFinalDraft.removeSelected(id)
+      return
+    }
+
+    const activeChildrenMap = archivedFinalDraft.snapshot.showPermittedOnly
+      ? archivedFinalVisibleIndexes.childrenMap
+      : finalTreeIndexes.childrenMap
+    const descendantLeafIds = new Set(collectLeafDescendantIds(id, activeChildrenMap))
+    archivedFinalDraft.setSelectedIds(
+      archivedFinalDraft.snapshot.selectedIds.filter((selectedId) => !descendantLeafIds.has(selectedId)),
+    )
+  }
+  const finalNoticeMessage = finalDraft.snapshot.filterToTopLevel && finalDraft.topLevelFilterAutoRemovedCount > 0
+    ? '部分末级预算单元已自动去勾选'
+    : undefined
+  const archivedFinalNoticeMessage =
+    archivedFinalDraft.snapshot.filterToTopLevel && archivedFinalDraft.topLevelFilterAutoRemovedCount > 0
       ? '部分末级预算单元已自动去勾选'
-      : '如组织架构存在变动，开启按一级预算单元筛选'
+      : undefined
 
   return (
     <div className="min-h-screen bg-white px-6 py-10 text-slate-900">
@@ -300,6 +336,7 @@ export default function Home() {
             leafSelectionMode
             topLevelFilterLabel="按一级预算单元筛选"
             topLevelFilterWarningMessage={finalNoticeMessage}
+            topLevelFilterTooltipMessage={topLevelFilterTooltipMessage}
           />
           <div className="h-px w-[420px] bg-slate-200" />
         </div>
@@ -409,6 +446,38 @@ export default function Home() {
               showSelectedLevelTag
               collapseLongTriggerPreview
               selectedListHorizontalPadding={6}
+            />
+          </div>
+          <div className="space-y-2">
+            <div className="w-max whitespace-nowrap text-xs font-medium text-slate-400">7/15 选1级展示叶子节点，尝试提示文案</div>
+            <BudgetUnitSelectorDraft
+              containerRef={archivedFinalDraft.selectorRef}
+              isOpen={archivedFinalDraft.isOpen}
+              searchText={archivedFinalDraft.searchText}
+              filterToTopLevel={archivedFinalDraft.snapshot.filterToTopLevel}
+              showPermittedOnly={archivedFinalDraft.snapshot.showPermittedOnly}
+              invalidPastedCount={archivedFinalDraft.invalidPastedCount}
+              tree={archivedFinalDraft.treeView}
+              selectedNodes={archivedFinalSelectedDisplayNodes}
+              selectedIds={archivedFinalDraft.snapshot.selectedIds}
+              selectedSet={archivedFinalDraft.selectedSet}
+              onOpen={() => !archivedFinalDraft.isOpen && archivedFinalDraft.openPanel()}
+              onSearchTextChange={archivedFinalDraft.setSearchText}
+              onFilterToTopLevelChange={archivedFinalDraft.handleFilterToTopLevelChange}
+              onShowPermittedOnlyChange={archivedFinalDraft.handleShowPermittedOnlyChange}
+              onToggleNode={archivedFinalDraft.handleToggleNode}
+              onSetSelectedIds={archivedFinalDraft.setSelectedIds}
+              onClearSelected={archivedFinalDraft.clearSelected}
+              onRemoveSelected={handleArchivedFinalRemoveSelected}
+              enableOverflowTooltip
+              selectedDisplayMode="name"
+              showSelectedLevelTag
+              collapseLongTriggerPreview
+              selectedListHorizontalPadding={6}
+              leafSelectionMode
+              topLevelFilterLabel="按一级预算单元筛选"
+              topLevelFilterWarningMessage={archivedFinalNoticeMessage}
+              topLevelFilterTooltipMessage={topLevelFilterTooltipMessage}
             />
           </div>
         </div>
